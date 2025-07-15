@@ -9,55 +9,55 @@ typedef vector<ll> vll;
 
 class SegmentTree {
    private:
-    int n;
-    vi st, lazy, A;
+    int n;                                  // n = (int)A.size()
+    vi st, lazy, A;                         // the arrays
 
-    int l(int p) { return p << 1; }
-    int r(int p) { return (p << 1) + 1; }
-
-    int conquer(int a, int b) {
-        if (a == -1) return b;
+    int l(int p) { return p << 1; }         // go to left child
+    int r(int p) { return (p << 1) + 1; }   // go to right child
+    
+    int conquer(int a, int b) { 
+        if (a == -1) return b;              // corner case
         if (b == -1) return a;
-        return min(a, b);
+        return min(a, b);                   // RMQ
     }
 
-    void build(int p, int L, int R) {
-        if (L == R)
-            st[p] = A[L];
+    void build(int p, int L, int R) {       // O(n)
+        if (L == R)                         
+            st[p] = A[L];                   // base case
         else {
             int m = (L + R) / 2;
-            build(l(p), L, m);
+            build(l(p), L, m);      
             build(r(p), m + 1, R);
             st[p] = conquer(st[l(p)], st[r(p)]);
         }
     }
 
     void propagate(int p, int L, int R) {
-        if (lazy[p] != -1) {
-            st[p] = lazy[p];
-            if (L != R)
-                lazy[l(p)] = lazy[r(p)] = lazy[p];
-            else
-                A[L] = lazy[p];
-            lazy[p] = -1;
+        if (lazy[p] != -1) {                        // has a lazy flag
+            st[p] = lazy[p];                        // [L..R] has same value
+            if (L != R)                             // not a leaf
+                lazy[l(p)] = lazy[r(p)] = lazy[p];  // propagate downwards
+            else                                    // L == R, a single index   
+                A[L] = lazy[p];                     // time to update this
+            lazy[p] = -1;                           // erase lazy flag
         }
     }
 
-    int RMQ(int p, int L, int R, int i, int j) {
-        propagate(p, L, R);
-        if (i > j) return -1;
-        if ((L >= i) && (R <= j)) return st[p];
-        int m = (L + R) / 2;
+    int RMQ(int p, int L, int R, int i, int j) {    // O(log n)
+        propagate(p, L, R);                         // lazy propagation
+        if (i > j) return -1;                       // infeasible
+        if ((L >= i) && (R <= j)) return st[p];     // found the segment
+        int m = (L + R) / 2;                        
         return conquer(RMQ(l(p), L, m, i, min(m, j)),
                        RMQ(r(p), m + 1, R, max(i, m + 1), j));
     }
 
-    void update(int p, int L, int R, int i, int j, int val) {
-        propagate(p, L, R);
+    void update(int p, int L, int R, int i, int j, int val) {   // O(log n)
+        propagate(p, L, R);                                     // lazy propagation
         if (i > j) return;
-        if (((L >= i) && (R <= j))) {
-            lazy[p] = val;
-            propagate(p, L, R);
+        if (((L >= i) && (R <= j))) {                           // found the segment 
+            lazy[p] = val;                                      // update this
+            propagate(p, L, R);                                 // lazy progration
         } else {
             int m = (L + R) / 2;
             update(l(p), L, m, i, min(m, j), val);
