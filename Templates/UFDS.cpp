@@ -8,9 +8,11 @@ class UnionFind {
 private:
     vi p, rank, setSize;
     int numSets;
+
 public:
     UnionFind(int N) {
-        p.assign(N, 0); for (int i = 0; i < N; ++i) p[i] = i;
+        p.assign(N, 0);
+        for (int i = 0; i < N; ++i) p[i] = i;
         rank.assign(N, 0);
         setSize.assign(N, 1);
         numSets = N;
@@ -22,34 +24,34 @@ public:
     int sizeOfSet(int i) { return setSize[findSet(i)]; }
 
     void UnionSet(int i, int j) {
-        if(isSameSet(i, j)) return;
+        if (isSameSet(i, j)) return;
         int x = findSet(i), y = findSet(j);
-        if(rank[x] > rank[y]) swap(x, y);
+        if (rank[x] > rank[y]) swap(x, y);
         p[x] = y;
-        if(rank[x] == rank[y]) ++rank[y];
+        if (rank[x] == rank[y]) ++rank[y];
         setSize[y] += setSize[x];
-        numSets --;
+        numSets--;
     }
 };
 
 int main() {
-    UnionFind UF(5); /// create 5 disjoint sets
-    printf("%d\n", UF.numDisjointSets()); // 5
+    UnionFind UF(5);
+    printf("%d\n", UF.numDisjointSets());
     UF.UnionSet(0, 1);
-    printf("%d\n", UF.numDisjointSets()); // 4
+    printf("%d\n", UF.numDisjointSets());
     UF.UnionSet(2, 3);
-    printf("%d\n", UF.numDisjointSets()); // 3
+    printf("%d\n", UF.numDisjointSets());
     UF.UnionSet(4, 3);
-    printf("%d\n", UF.numDisjointSets()); // 2
-    printf("isSameSet(0, 3) = %d\n", UF.isSameSet(0, 3)); // 0 (false)
-    printf("isSameSet(4, 3) = %d\n", UF.isSameSet(4, 3)); // 1 (true)
-    for (int i = 0;i < 5;i ++) // 1 for {0, 1} and 3 for {2, 3, 4}
+    printf("%d\n", UF.numDisjointSets());
+    printf("isSameSet(0, 3) = %d\n", UF.isSameSet(0, 3));
+    printf("isSameSet(4, 3) = %d\n", UF.isSameSet(4, 3));
+    for (int i = 0; i < 5; i++)
         printf("findSet(%d) = %d, sizeOfSet(%d) = %d\n",
                i, UF.findSet(i), i, UF.sizeOfSet(i));
     UF.UnionSet(0, 3);
-    printf("%d\n", UF.numDisjointSets()); // 1
-    for (int i = 0;i < 5;++ i) 
+    printf("%d\n", UF.numDisjointSets());
+    for (int i = 0; i < 5; ++i)
         printf("findSet(%d) = %d, sizeOfSet(%d) = %d\n",
-                i, UF.findSet(i), i, UF.sizeOfSet(i));
+               i, UF.findSet(i), i, UF.sizeOfSet(i));
     return 0;
 }
