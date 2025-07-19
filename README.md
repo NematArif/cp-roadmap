@@ -2,7 +2,7 @@
 
 🧠 Goals:
 - Reach USACO Gold by March 2026
-- Score 120+ on Euclid
+- Score 90+ on Euclid
 - Qualify for CCO
 - Document 200+ problems
 
